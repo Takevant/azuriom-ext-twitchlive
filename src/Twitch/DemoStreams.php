@@ -9,15 +9,30 @@ use Illuminate\Support\Collection;
  */
 class DemoStreams
 {
-    protected const TITLES = [
-        'Building the new capital on the server!',
-        'Hardcore survival – day 42',
-        'Skyblock: aiming for the top island',
-        'Faction war tonight on the server!',
-        'Redstone and automatic farms',
-        'Chill & chatting with the community',
-        'Build event: the Christmas spawn of the server',
-        'End speedrun on the server',
+    /**
+     * Games of the demo streams, with their Twitch id and a few stream titles.
+     */
+    protected const GAMES = [
+        [
+            'id' => '263490',
+            'name' => 'Rust',
+            'titles' => ['Base building with the squad', 'Wipe day on the server!'],
+        ],
+        [
+            'id' => '32982',
+            'name' => 'Grand Theft Auto V',
+            'titles' => ['Roleplay night on the server', 'Opening the new city shop'],
+        ],
+        [
+            'id' => Settings::MINECRAFT_GAME_ID,
+            'name' => 'Minecraft',
+            'titles' => ['Hardcore survival, day 42', 'Building the new spawn of the server!'],
+        ],
+        [
+            'id' => '32399',
+            'name' => 'Counter-Strike',
+            'titles' => ['Community matches tonight', 'Warming up before the tournament'],
+        ],
     ];
 
     /**
@@ -38,15 +53,17 @@ class DemoStreams
             }
 
             $chatting = ! $streamer->is_featured && $hash % 7 === 0;
+            // Same order as the thumbnails, so each streamer keeps its game and picture.
+            $game = self::GAMES[$index % count(self::GAMES)];
 
             $streams[] = [
                 'id' => 'demo-'.$streamer->id,
                 'user_id' => 'demo-'.$streamer->id,
                 'login' => $streamer->login,
                 'name' => $streamer->displayName(),
-                'game_id' => $chatting ? '509658' : Settings::MINECRAFT_GAME_ID,
-                'game_name' => $chatting ? 'Just Chatting' : 'Minecraft',
-                'title' => $chatting ? 'Chatting before the session' : self::TITLES[$hash % count(self::TITLES)],
+                'game_id' => $chatting ? '509658' : $game['id'],
+                'game_name' => $chatting ? 'Just Chatting' : $game['name'],
+                'title' => $chatting ? 'Chatting before the session' : $game['titles'][intdiv($hash, 7) % count($game['titles'])],
                 'viewers' => ($streamer->is_featured ? 180 : 4) + $hash % 260,
                 'started_at' => now()->startOfHour()->subMinutes(15 + $hash % 200)->toIso8601ZuluString(),
                 'language' => 'en',
