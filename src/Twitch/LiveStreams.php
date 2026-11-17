@@ -99,7 +99,7 @@ class LiveStreams
 
             return $state;
         } catch (Throwable $e) {
-            Log::warning('[Plugiit Twitch Live] Unable to refresh the live streams: '.$e->getMessage());
+            Log::warning('[Twitch Live] Unable to refresh the live streams: '.$e->getMessage());
 
             $last = Cache::get(self::LAST_KEY);
             $state = $last ?? $this->makeState([]);
@@ -181,7 +181,7 @@ class LiveStreams
             $profiles = array_merge($profiles, $client->users($missing));
         } catch (TwitchException $e) {
             // Avatars are optional: the live streams are still displayed.
-            Log::notice('[Plugiit Twitch Live] Unable to fetch the Twitch profiles: '.$e->getMessage());
+            Log::notice('[Twitch Live] Unable to fetch the Twitch profiles: '.$e->getMessage());
 
             return $profiles;
         }

@@ -1,10 +1,10 @@
-![Plugiit Twitch Live](.github/banner.png)
+![Twitch Live](.github/banner.png)
 
-# Plugiit Twitch Live
+# Twitch Live
 
 Show which of your community's streamers are live on Twitch, with an embedded player, a theme widget and a live counter in the navbar.
 
-Azuriom plugin · v1.0.1 · by Plugiit
+Azuriom plugin · v1.0.1 · by Takevant
 
 ## Features
 
@@ -141,7 +141,7 @@ vendor/bin/phpunit plugins/twitch-live/tests
 
 ## Support
 
-Open an issue on GitHub or contact Plugiit.
+Open an issue on GitHub or contact [Takevant](https://takevant.com).
 
 ## Contributing
 
