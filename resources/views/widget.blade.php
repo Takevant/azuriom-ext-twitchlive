@@ -15,7 +15,7 @@
         @endpush
     @endonce
 
-    <div class="card plugiit-twitch-live-widget mb-4">
+    <div class="card twitch-live-widget mb-4">
         <div class="card-header d-flex align-items-center justify-content-between">
             <span class="fw-semibold"><i class="bi bi-twitch" style="color: #9146ff"></i> {{ trans('twitch-live::messages.widget.title') }}</span>
             @if(count($ptlState['streams']) > 0)

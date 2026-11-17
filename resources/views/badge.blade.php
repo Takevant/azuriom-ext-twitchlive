@@ -5,12 +5,12 @@
         var links = document.querySelectorAll('a[href="' + url + '"]');
 
         links.forEach(function (link) {
-            if (link.querySelector('.plugiit-twitch-live-badge') || !link.closest('nav, header, .navbar')) {
+            if (link.querySelector('.twitch-live-badge') || !link.closest('nav, header, .navbar')) {
                 return;
             }
 
             var badge = document.createElement('span');
-            badge.className = 'badge rounded-pill ms-1 plugiit-twitch-live-badge';
+            badge.className = 'badge rounded-pill ms-1 twitch-live-badge';
             badge.style.background = '#eb0400';
             badge.style.color = '#fff';
             badge.title = label;
@@ -22,7 +22,7 @@
             var dropdown = link.closest('.dropdown');
             var toggle = dropdown ? dropdown.querySelector('.dropdown-toggle') : null;
 
-            if (toggle && !toggle.querySelector('.plugiit-twitch-live-badge')) {
+            if (toggle && !toggle.querySelector('.twitch-live-badge')) {
                 var dot = badge.cloneNode(true);
                 toggle.appendChild(dot);
             }
