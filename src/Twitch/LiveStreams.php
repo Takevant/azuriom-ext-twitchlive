@@ -4,6 +4,7 @@ namespace Azuriom\Plugin\TwitchLive\Twitch;
 
 use Azuriom\Plugin\TwitchLive\Models\Streamer;
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -227,7 +228,7 @@ class LiveStreams
     }
 
     /**
-     * Format the duration since the stream started, e.g. "2 h 05".
+     * The duration since the stream started, translated by Carbon, e.g. "2h 5m".
      */
     public static function duration(?string $startedAt): ?string
     {
@@ -235,10 +236,12 @@ class LiveStreams
             return null;
         }
 
-        $minutes = max(0, (int) Carbon::parse($startedAt)->diffInMinutes(now(), true));
-
-        return $minutes >= 60
-            ? sprintf('%d h %02d', intdiv($minutes, 60), $minutes % 60)
-            : sprintf('%d min', $minutes);
+        // A start date in the future (clock drift) is displayed as "0m".
+        return Carbon::parse($startedAt)->min(now())->diffForHumans([
+            'syntax' => CarbonInterface::DIFF_ABSOLUTE,
+            'short' => true,
+            'parts' => 2,
+            'minimumUnit' => 'minute',
+        ]);
     }
 }
