@@ -10,14 +10,14 @@ use Illuminate\Support\Collection;
 class DemoStreams
 {
     protected const TITLES = [
-        'Construction de la nouvelle capitale sur le serveur !',
-        'Survie hardcore – jour 42 [FR]',
-        'Skyblock : on vise le top 1 de l\'île',
-        'Guerre de factions ce soir sur le serveur !',
-        'Redstone et fermes automatiques',
-        'Chill & discussions avec la commu',
-        'Event build : le spawn de Noël du serveur',
-        'Speedrun du End sur le serveur',
+        'Building the new capital on the server!',
+        'Hardcore survival – day 42',
+        'Skyblock: aiming for the top island',
+        'Faction war tonight on the server!',
+        'Redstone and automatic farms',
+        'Chill & chatting with the community',
+        'Build event: the Christmas spawn of the server',
+        'End speedrun on the server',
     ];
 
     /**
@@ -46,10 +46,10 @@ class DemoStreams
                 'name' => $streamer->displayName(),
                 'game_id' => $chatting ? '509658' : Settings::MINECRAFT_GAME_ID,
                 'game_name' => $chatting ? 'Just Chatting' : 'Minecraft',
-                'title' => $chatting ? 'Discussions avant la session' : self::TITLES[$hash % count(self::TITLES)],
+                'title' => $chatting ? 'Chatting before the session' : self::TITLES[$hash % count(self::TITLES)],
                 'viewers' => ($streamer->is_featured ? 180 : 4) + $hash % 260,
                 'started_at' => now()->startOfHour()->subMinutes(15 + $hash % 200)->toIso8601ZuluString(),
-                'language' => 'fr',
+                'language' => 'en',
                 'thumbnail' => plugin_asset('twitch-live', 'img/demo-'.(($index % 4) + 1).'.svg'),
             ];
         }
