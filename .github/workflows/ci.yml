@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*', '[0-9]*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  # Keep a result for every commit pushed to main, only cancel outdated PR runs.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  plugin-id:
+    name: Plugin ID
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
+      - name: Check the plugin ID
+        env:
+          FORBIDDEN_WORDS: plugiit takevant
+        run: |
+          if ! id="$(jq -er '.id | strings' plugin.json)"; then
+            echo "::error file=plugin.json::plugin.json must contain a string \"id\"."
+            exit 1
+          fi
+          # JSON-encoded for display, so the value cannot inject workflow commands.
+          id_json="$(jq -c '.id' plugin.json)"
+          status=0
+
+          # Azuriom uses the ID as folder name, URL prefix and route name prefix.
+          # Matched on the JSON-encoded value: control characters stay escaped,
+          # so a trailing newline (dropped by the command substitution) cannot pass.
+          id_pattern='^"[a-z0-9]+(-[a-z0-9]+)*"$'
+          if ! [[ "$id_json" =~ $id_pattern ]]; then
+            echo "::error file=plugin.json::The plugin ID $id_json must be lowercase letters and digits separated by single dashes, like \"my-plugin\"."
+            status=1
+          fi
+
+          # Lowercase and drop separators so "Take-Vant" or "plug_iit" are caught too.
+          normalized="$(printf '%s' "$id" | tr '[:upper:]' '[:lower:]' | tr -cd 'a-z0-9')"
+
+          for word in $FORBIDDEN_WORDS; do
+            if [[ "$normalized" == *"$word"* ]]; then
+              echo "::error file=plugin.json::The plugin ID $id_json must not contain \"$word\"."
+              status=1
+            fi
+          done
+
+          if [ "$status" -eq 0 ]; then
+            echo "Plugin ID $id_json is valid."
+          fi
+          exit "$status"
