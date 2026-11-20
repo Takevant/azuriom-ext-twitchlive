@@ -61,3 +61,23 @@ jobs:
             echo "Plugin ID $id_json is valid."
           fi
           exit "$status"
+
+  plugin-checks:
+    name: Azuriom plugin
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
+        with:
+          php-version: '8.2'
+          coverage: none
+          tools: none
+
+      - name: Check manifest, version, translations, migrations and committed files
+        run: php .github/scripts/check-plugin.php
